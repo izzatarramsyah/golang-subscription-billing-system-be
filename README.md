@@ -1,4 +1,4 @@
-# 🧠 Subscription Billing System – Backend ( ONGOING PROJECT )
+# 📚 Subscription Billing System
 
 This is the backend service for the Subscription Billing System, a SaaS platform for managing digital product subscriptions (e.g., eBook Library).
 
