@@ -3,12 +3,13 @@ package models
 import (
 	"time"
     "github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type User struct {
-    ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
+    ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+    Username  string    `gorm:"unique;not null"`
     Email     string    `gorm:"unique;not null"`
+    Status    string    `gorm:"not null;default:'ACTIVE'"` 
     Password  string    `gorm:"not null"`
     Role      string    `gorm:"not null"` // admin, business_owner, subscriber
     CreatedAt time.Time
@@ -20,10 +21,20 @@ func (User) TableName() string {
 
 type UserRepository interface {
 	CreateUser(user User) (*User, error)
-    FindUserByUsername(username string) (*User, error)
+    GetListUsers() (*[]User, error)
+    FindUserByUsername(email string) (*User, error)
+    UpdateUser(user User) (*User, error)
+    UpdateUserStatus(userID uuid.UUID, status string) (*bool, error)
+    FindUserByID(userID uuid.UUID) (*User, error)
+    FindUserByRole(role string) (*[]User, error)
 }
 
 type UserUseCase interface {
-	RegisterUser(user models.User) (User, error)
-    Login(user models.User) (User, error)
+	RegisterUser(user User) (*User, error)
+    Login(user User) (*User, error)
+    GetListUsers() (*[]User, error)
+    UpdateUser(user User) (*User, error)
+    UpdateUserStatus(userID uuid.UUID, status string) (*bool, error)
+    FindUserByID(userID uuid.UUID) (*User, error)
+    FindUserByRole(role string) (*[]User, error)
 }

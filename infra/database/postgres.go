@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ func LoadEnv() {
 }
 
 // ConnectDatabase menghubungkan aplikasi ke database PostgreSQL
-func ConnectDatabase() {
+func ConnectDatabase() *gorm.DB {
 	LoadEnv()
 
 	dsn := fmt.Sprintf(
@@ -40,4 +40,5 @@ func ConnectDatabase() {
 
 	DB = db
 	log.Println("Database connection established.")
+	return db
 }

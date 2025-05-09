@@ -2,20 +2,34 @@ package main
 
 import (
 	"log"
-	"os"
 	"subscription-billing-system/infra/database"
 	"subscription-billing-system/models"
-	"subscription-billing-system/server"
-	"subscription-billing-system/api/v1/routes"
+	"subscription-billing-system/infra/server"
 )
 
 func main() {
 	// Connect to the database
-	database.ConnectDatabase()
+
+	log.Println("Connecting to database...")
+	db := database.ConnectDatabase()
+	log.Printf("DB: %+v\n", database.DB)
 
 	// Migrate models
-	database.DB.AutoMigrate(&models.User{}, &models.Plan{}, &models.Subscription{}, &models.Payment{}, &models.Product{})
+	err := db.AutoMigrate(
+		&models.User{},
+		&models.Plan{},
+		&models.Subscription{},
+		&models.Payment{},
+		&models.Product{},
+		&models.Reminder{},
+		&models.Ebook{},
+	)
+	if err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	} else {
+		log.Println("Migration executed successfully")
+	}
 
-	// Set up and run the server
-	server.RunServer()
+	// Run the server
+	server.RunServer(db)
 }
